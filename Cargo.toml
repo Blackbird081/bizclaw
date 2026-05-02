@@ -51,6 +51,14 @@ members = [
     "crates/bizclaw-invoice",
     "crates/bizclaw-legal",
     "crates/bizclaw-analytics",
+    "crates/bizclaw-payment",
+    "crates/bizclaw-support",
+    "crates/bizclaw-accounting",
+    "crates/bizclaw-pos",
+    "crates/bizclaw-inventory",
+    "crates/bizclaw-proposal",
+    "crates/bizclaw-einvoice",
+    "crates/bizclaw-banking",
 ]
 
 # ── Workspace-wide lint policy ──────────────────────────
