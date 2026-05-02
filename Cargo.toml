@@ -47,6 +47,10 @@ members = [
     "crates/bizclaw-obsidian",
     "crates/bizclaw-hermes",
     "crates/bizclaw-khazix",
+    "crates/bizclaw-outreach",
+    "crates/bizclaw-invoice",
+    "crates/bizclaw-legal",
+    "crates/bizclaw-analytics",
 ]
 
 # ── Workspace-wide lint policy ──────────────────────────
