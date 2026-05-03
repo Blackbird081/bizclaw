@@ -1,12 +1,12 @@
-# 🦞 BizClaw
+# 🦞 BizClaw Cloud
 
-**Nền tảng AI vận hành cho OPC Việt Nam**
+**Nền tảng AI vận hành cho OPC Việt Nam - Cloud Only**
 
-*MAMA AI giúp bạn quản lý khách hàng, đơn hàng, kho hàng... không cần thuê nhân sự.*
+*Đăng ký, dùng ngay. Không cần cài đặt.*
 
 ---
 
-## 🎯 BizClaw giúp gì?
+## 🎯 BizClaw Cloud giúp gì?
 
 ### 📱 Retail (Bán lẻ)
 
@@ -52,7 +52,27 @@ MAMA là AI agent tổng quản:
 
 ---
 
-## 📦 Modules
+## � Triển khai
+
+### Đăng ký ngay
+
+1. Truy cập **bizclaw.io**
+2. Tạo tài khoản
+3. Chọn gói phù hợp
+4. Bắt đầu sử dụng
+
+### Tự deploy (Advanced)
+
+```bash
+# Deploy lên Railway/Render
+git clone https://github.com/nguyenduchoai/bizclaw-cloud
+cd bizclaw-cloud
+railway up
+```
+
+---
+
+## �📦 Modules
 
 | Module | Mô tả |
 |--------|--------|
@@ -63,40 +83,37 @@ MAMA là AI agent tổng quản:
 
 ---
 
-## 🚀 Triển khai
+## � Bảng giá
 
-### Docker
+| Gói | Giá | Phù hợp |
+|------|------|----------|
+| **Starter** | Miễn phí | 1 người |
+| **Pro** | 299K/tháng | 1-3 người |
+| **Business** | 799K/tháng | 3-10 người |
+
+---
+
+## 🌐 API Endpoints
+
+Truy cập `https://api.bizclaw.io/v1/`
 
 ```bash
-docker run -d \
-  --name bizclaw \
-  -p 3000:3000 \
-  -e DATABASE_URL=postgres://user:pass@host:5432/bizclaw \
-  nguyenduchoai/bizclaw:latest
+# Support
+GET  /v1/support/tickets
+POST /v1/support/tickets
+
+# Inventory
+GET  /v1/inventory/items
+POST /v1/inventory/items
+
+# Accounting
+GET  /v1/accounting/reports/balance-sheet
+GET  /v1/accounting/reports/income-statement
+
+# Payment
+POST /v1/payments/vietqr/generate
+GET  /v1/payments/vietqr/banks
 ```
-
-### Railway
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/nguyenduchoai/bizclaw)
-
----
-
-## 🌐 Domain
-
-```env
-DOMAIN=https://shop-cua-ban.com
-TENANT_MODE=single
-DATABASE_URL=postgres://...
-```
-
----
-
-## 📈 Dashboard KPIs
-
-- **Đơn hàng hôm nay**
-- **Ticket chưa xử lý**
-- **Tồn kho thấp**
-- **Doanh thu**
 
 ---
 
