@@ -120,10 +120,10 @@ pub struct SearchResult {
 }
 
 pub struct KnowledgeGraph {
-    entities: RwLock<HashMap<EntityId, Entity>>,
-    relationships: RwLock<HashMap<String, Relationship>>,
-    adjacency: RwLock<HashMap<EntityId, HashSet<String>>>,
-    embeddings_index: RwLock<HashMap<EntityId, Vec<f32>>>,
+    pub(crate) entities: RwLock<HashMap<EntityId, Entity>>,
+    pub(crate) relationships: RwLock<HashMap<String, Relationship>>,
+    pub(crate) adjacency: RwLock<HashMap<EntityId, HashSet<String>>>,
+    pub(crate) embeddings_index: RwLock<HashMap<EntityId, Vec<f32>>>,
 }
 
 impl Default for KnowledgeGraph {

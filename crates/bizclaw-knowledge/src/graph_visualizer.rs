@@ -335,7 +335,7 @@ impl KnowledgeGraph {
         let entities = self.entities.read().await;
         let query_lower = query.to_lowercase();
 
-        let mut results: Vec<(f64, &Entity)> = entities
+        let mut results: Vec<(f64, Entity)> = entities
             .values()
             .filter_map(|entity| {
                 let mut score = 0.0;
@@ -365,7 +365,7 @@ impl KnowledgeGraph {
                 }
 
                 if score > 0.0 {
-                    Some((score, *entity))
+                    Some((score, entity.clone()))
                 } else {
                     None
                 }
@@ -377,12 +377,12 @@ impl KnowledgeGraph {
         results
             .into_iter()
             .take(limit)
-            .map(|(_, e)| GraphNode::from(e))
+            .map(|(_, e)| GraphNode::from(&e))
             .collect()
     }
 
     /// Find path between two entities using BFS
-    pub async fn find_path(&self, from_id: &str, to_id: &str) -> Option<EntityPath> {
+    pub async fn find_entity_path(&self, from_id: &str, to_id: &str) -> Option<EntityPath> {
         use std::collections::VecDeque;
 
         let relationships = self.relationships.read().await;
