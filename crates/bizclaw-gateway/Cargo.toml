@@ -33,6 +33,7 @@ futures.workspace = true
 bizclaw-db.workspace = true
 bizclaw-security.workspace = true
 bizclaw-tools.workspace = true
+sqlx = { workspace = true, features = ["postgres", "runtime-tokio-native-tls", "chrono", "uuid", "json"] }
 jsonwebtoken = "9"
 hex = "0.4"
 rand.workspace = true

@@ -4,6 +4,7 @@
 pub mod cloud;
 pub mod dashboard;
 pub mod db;
+pub mod db_migrations;
 pub mod openai_compat;
 pub mod routes;
 pub mod server;
