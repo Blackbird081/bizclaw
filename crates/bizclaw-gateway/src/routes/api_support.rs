@@ -2,6 +2,7 @@
 //! 
 //! REST endpoints for ticket management, customer support
 
+use std::sync::Arc;
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -35,17 +36,15 @@ pub struct UpdateStatusRequest {
 }
 
 // GET /api/support/tickets
-async fn list_tickets(
-    State(state): State<AppState>,
+pub async fn list_tickets(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
-    // In production, query from database
-    // For now, return empty list
     Ok(Json(vec![]))
 }
 
 // GET /api/support/tickets/:id
-async fn get_ticket(
-    State(_state): State<AppState>,
+pub async fn get_ticket(
+    State(_state): State<Arc<AppState>>,
     Path(ticket_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
@@ -56,8 +55,8 @@ async fn get_ticket(
 }
 
 // POST /api/support/tickets
-async fn create_ticket(
-    State(_state): State<AppState>,
+pub async fn create_ticket(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<CreateTicketRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let ticket_id = Uuid::new_v4().to_string();
@@ -73,8 +72,8 @@ async fn create_ticket(
 }
 
 // POST /api/support/tickets/:id/messages
-async fn add_message(
-    State(_state): State<AppState>,
+pub async fn add_message(
+    State(_state): State<Arc<AppState>>,
     Path(ticket_id): Path<String>,
     Json(req): Json<AddMessageRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -90,8 +89,8 @@ async fn add_message(
 }
 
 // PUT /api/support/tickets/:id/status
-async fn update_status(
-    State(_state): State<AppState>,
+pub async fn update_status(
+    State(_state): State<Arc<AppState>>,
     Path(ticket_id): Path<String>,
     Json(req): Json<UpdateStatusRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -103,16 +102,16 @@ async fn update_status(
 }
 
 // DELETE /api/support/tickets/:id
-async fn delete_ticket(
-    State(_state): State<AppState>,
+pub async fn delete_ticket(
+    State(_state): State<Arc<AppState>>,
     Path(_ticket_id): Path<String>,
-) -> Result<StatusCode, StatusCode> {
-    Ok(StatusCode::NO_CONTENT)
+) -> StatusCode {
+    StatusCode::NO_CONTENT
 }
 
 // GET /api/support/stats
-async fn get_stats(
-    State(_state): State<AppState>,
+pub async fn get_stats(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "total_tickets": 0,
@@ -121,15 +120,4 @@ async fn get_stats(
         "avg_response_time": "0h",
         "sla_compliance": 100.0
     })))
-}
-
-pub fn routes() -> Router<AppState> {
-    Router::new()
-        .route("/tickets", get(list_tickets))
-        .route("/tickets", post(create_ticket))
-        .route("/tickets/:id", get(get_ticket))
-        .route("/tickets/:id", put(update_status))
-        .route("/tickets/:id", delete(delete_ticket))
-        .route("/tickets/:id/messages", post(add_message))
-        .route("/stats", get(get_stats))
 }

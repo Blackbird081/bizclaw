@@ -2,6 +2,7 @@
 //! 
 //! REST endpoints for bookkeeping and financial reports
 
+use std::sync::Arc;
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -40,69 +41,46 @@ pub struct RecordExpenseRequest {
     pub description: Option<String>,
 }
 
-pub fn routes() -> Router<AppState> {
-    Router::new()
-        // Transactions
-        .route("/transactions", get(list_transactions))
-        .route("/transactions", post(record_transaction))
-        .route("/transactions/:id", get(get_transaction))
-        
-        // Sales & Purchases
-        .route("/sales", post(record_sale))
-        .route("/purchases", post(record_purchase))
-        .route("/expenses", post(record_expense))
-        
-        // Reports
-        .route("/reports/balance-sheet", get(balance_sheet))
-        .route("/reports/income-statement", get(income_statement))
-        .route("/reports/trial-balance", get(trial_balance))
-        .route("/reports/cash-flow", get(cash_flow))
-        .route("/reports/vat", get(vat_report))
-        
-        // Accounts
-        .route("/accounts", get(list_accounts))
-}
-
-async fn list_transactions(
-    State(_state): State<AppState>,
+pub async fn list_transactions(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![]))
 }
 
-async fn get_transaction(
-    State(_state): State<AppState>,
-    Path(tx_id): Path<Uuid>,
+pub async fn get_transaction(
+    State(_state): State<Arc<AppState>>,
+    Path(tx_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
-        "id": tx_id.to_string(),
+        "id": tx_id,
         "description": "Sample transaction",
         "entries": []
     })))
 }
 
-async fn record_transaction(
-    State(_state): State<AppState>,
+pub async fn record_transaction(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<RecordTransactionRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let tx_id = Uuid::new_v4();
+    let tx_id = Uuid::new_v4().to_string();
     Ok(Json(serde_json::json!({
-        "id": tx_id.to_string(),
+        "id": tx_id,
         "description": req.description,
         "entries": req.entries,
         "created_at": chrono::Utc::now().to_rfc3339()
     })))
 }
 
-async fn record_sale(
-    State(_state): State<AppState>,
+pub async fn record_sale(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<RecordSaleRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let tx_id = Uuid::new_v4();
+    let tx_id = Uuid::new_v4().to_string();
     let vat = req.amount * 10 / 100;
     let total = req.amount + vat;
     
     Ok(Json(serde_json::json!({
-        "id": tx_id.to_string(),
+        "id": tx_id,
         "type": "sale",
         "amount": req.amount,
         "vat": vat,
@@ -117,17 +95,17 @@ async fn record_sale(
     })))
 }
 
-async fn record_purchase(
-    State(_state): State<AppState>,
+pub async fn record_purchase(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let tx_id = Uuid::new_v4();
+    let tx_id = Uuid::new_v4().to_string();
     let amount = req.get("amount").and_then(|v| v.as_i64()).unwrap_or(0);
     let vat = amount * 10 / 100;
     let total = amount + vat;
     
     Ok(Json(serde_json::json!({
-        "id": tx_id.to_string(),
+        "id": tx_id,
         "type": "purchase",
         "amount": amount,
         "vat": vat,
@@ -136,11 +114,11 @@ async fn record_purchase(
     })))
 }
 
-async fn record_expense(
-    State(_state): State<AppState>,
+pub async fn record_expense(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<RecordExpenseRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let tx_id = Uuid::new_v4();
+    let tx_id = Uuid::new_v4().to_string();
     let account = match req.category.as_str() {
         "selling" => "6100",
         "admin" => "6200",
@@ -148,7 +126,7 @@ async fn record_expense(
     };
     
     Ok(Json(serde_json::json!({
-        "id": tx_id.to_string(),
+        "id": tx_id,
         "type": "expense",
         "amount": req.amount,
         "category": req.category,
@@ -158,8 +136,8 @@ async fn record_expense(
     })))
 }
 
-async fn balance_sheet(
-    State(_state): State<AppState>,
+pub async fn balance_sheet(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "date": chrono::Utc::now().format("%Y-%m-%d").to_string(),
@@ -170,8 +148,8 @@ async fn balance_sheet(
     })))
 }
 
-async fn income_statement(
-    State(_state): State<AppState>,
+pub async fn income_statement(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "period": chrono::Utc::now().format("%Y-%m").to_string(),
@@ -183,8 +161,8 @@ async fn income_statement(
     })))
 }
 
-async fn trial_balance(
-    State(_state): State<AppState>,
+pub async fn trial_balance(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "date": chrono::Utc::now().format("%Y-%m-%d").to_string(),
@@ -195,8 +173,8 @@ async fn trial_balance(
     })))
 }
 
-async fn cash_flow(
-    State(_state): State<AppState>,
+pub async fn cash_flow(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "period": chrono::Utc::now().format("%Y-%m").to_string(),
@@ -207,8 +185,8 @@ async fn cash_flow(
     })))
 }
 
-async fn vat_report(
-    State(_state): State<AppState>,
+pub async fn vat_report(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "period": chrono::Utc::now().format("%Y-%m").to_string(),
@@ -218,8 +196,8 @@ async fn vat_report(
     })))
 }
 
-async fn list_accounts(
-    State(_state): State<AppState>,
+pub async fn list_accounts(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![
         serde_json::json!({"code": "1100", "name": "Tiền mặt", "type": "asset"}),

@@ -2,6 +2,7 @@
 //! 
 //! REST endpoints for payment processing (VietQR, MoMo, ZaloPay)
 
+use std::sync::Arc;
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -27,49 +28,32 @@ pub struct ConfirmPaymentRequest {
     pub provider_ref: String,
 }
 
-pub fn routes() -> Router<AppState> {
-    Router::new()
-        // Payments
-        .route("/payments", get(list_payments))
-        .route("/payments", post(create_payment))
-        .route("/payments/:id", get(get_payment))
-        .route("/payments/:id/confirm", post(confirm_payment))
-        .route("/payments/:id/cancel", post(cancel_payment))
-        
-        // VietQR
-        .route("/vietqr/generate", post(generate_vietqr))
-        .route("/vietqr/banks", get(list_banks))
-        
-        // Stats
-        .route("/stats", get(get_payment_stats))
-}
-
-async fn list_payments(
-    State(_state): State<AppState>,
+pub async fn list_payments(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![]))
 }
 
-async fn get_payment(
-    State(_state): State<AppState>,
-    Path(payment_id): Path<Uuid>,
+pub async fn get_payment(
+    State(_state): State<Arc<AppState>>,
+    Path(payment_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
-        "id": payment_id.to_string(),
+        "id": payment_id,
         "status": "pending",
         "amount": 0,
         "method": "vietqr"
     })))
 }
 
-async fn create_payment(
-    State(_state): State<AppState>,
+pub async fn create_payment(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<CreatePaymentRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let payment_id = Uuid::new_v4();
+    let payment_id = Uuid::new_v4().to_string();
     
     Ok(Json(serde_json::json!({
-        "id": payment_id.to_string(),
+        "id": payment_id,
         "order_id": req.order_id,
         "amount": req.amount,
         "method": req.method,
@@ -78,31 +62,31 @@ async fn create_payment(
     })))
 }
 
-async fn confirm_payment(
-    State(_state): State<AppState>,
-    Path(payment_id): Path<Uuid>,
+pub async fn confirm_payment(
+    State(_state): State<Arc<AppState>>,
+    Path(payment_id): Path<String>,
     Json(_req): Json<ConfirmPaymentRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
-        "id": payment_id.to_string(),
+        "id": payment_id,
         "status": "completed",
         "confirmed_at": chrono::Utc::now().to_rfc3339()
     })))
 }
 
-async fn cancel_payment(
-    State(_state): State<AppState>,
-    Path(payment_id): Path<Uuid>,
+pub async fn cancel_payment(
+    State(_state): State<Arc<AppState>>,
+    Path(payment_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
-        "id": payment_id.to_string(),
+        "id": payment_id,
         "status": "cancelled",
         "cancelled_at": chrono::Utc::now().to_rfc3339()
     })))
 }
 
-async fn generate_vietqr(
-    State(_state): State<AppState>,
+pub async fn generate_vietqr(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let order_id = req.get("order_id").and_then(|v| v.as_str()).unwrap_or("ORDER001");
@@ -120,13 +104,13 @@ async fn generate_vietqr(
         "amount": amount,
         "description": description,
         "qr_data": qr_data,
-        "qr_image": format!("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="),
-        "expires_at": chrono::Utc::now() + chrono::Duration::minutes(15)
+        "qr_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        "expires_at": (chrono::Utc::now() + chrono::Duration::minutes(15)).to_rfc3339()
     })))
 }
 
-async fn list_banks(
-    State(_state): State<AppState>,
+pub async fn list_banks(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![
         serde_json::json!({"id": "970436", "code": "BIDV", "name": "BIDV", "short_name": "BIDV"}),
@@ -138,8 +122,8 @@ async fn list_banks(
     ]))
 }
 
-async fn get_payment_stats(
-    State(_state): State<AppState>,
+pub async fn get_payment_stats(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "total_transactions": 0,

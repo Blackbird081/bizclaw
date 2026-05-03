@@ -2,6 +2,7 @@
 //! 
 //! REST endpoints for stock management
 
+use std::sync::Arc;
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -32,40 +33,14 @@ pub struct ReserveStockRequest {
     pub quantity: i32,
 }
 
-pub fn routes() -> Router<AppState> {
-    Router::new()
-        // Items
-        .route("/items", get(list_items))
-        .route("/items", post(create_item))
-        .route("/items/:id", get(get_item))
-        .route("/items/:id", put(update_item))
-        .route("/items/:id", delete(delete_item))
-        
-        // Stock operations
-        .route("/items/:id/receive", post(receive_stock))
-        .route("/items/:id/sell", post(sell_stock))
-        .route("/items/:id/reserve", post(reserve_stock))
-        .route("/items/:id/release", post(release_stock))
-        
-        // Alerts
-        .route("/alerts/low-stock", get(get_low_stock_alerts))
-        
-        // Warehouses
-        .route("/warehouses", get(list_warehouses))
-        .route("/warehouses", post(create_warehouse))
-        
-        // Stats
-        .route("/stats", get(get_inventory_stats))
-}
-
-async fn list_items(
-    State(_state): State<AppState>,
+pub async fn list_items(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![]))
 }
 
-async fn get_item(
-    State(_state): State<AppState>,
+pub async fn get_item(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
@@ -80,8 +55,8 @@ async fn get_item(
     })))
 }
 
-async fn create_item(
-    State(_state): State<AppState>,
+pub async fn create_item(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<CreateItemRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let item_id = Uuid::new_v4().to_string();
@@ -98,8 +73,8 @@ async fn create_item(
     })))
 }
 
-async fn update_item(
-    State(_state): State<AppState>,
+pub async fn update_item(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
     Json(_req): Json<serde_json::Value>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -109,15 +84,15 @@ async fn update_item(
     })))
 }
 
-async fn delete_item(
-    State(_state): State<AppState>,
+pub async fn delete_item(
+    State(_state): State<Arc<AppState>>,
     Path(_item_id): Path<String>,
-) -> Result<StatusCode, StatusCode> {
-    Ok(StatusCode::NO_CONTENT)
+) -> StatusCode {
+    StatusCode::NO_CONTENT
 }
 
-async fn receive_stock(
-    State(_state): State<AppState>,
+pub async fn receive_stock(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
     Json(req): Json<AdjustStockRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -130,8 +105,8 @@ async fn receive_stock(
     })))
 }
 
-async fn sell_stock(
-    State(_state): State<AppState>,
+pub async fn sell_stock(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
     Json(req): Json<AdjustStockRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -143,8 +118,8 @@ async fn sell_stock(
     })))
 }
 
-async fn reserve_stock(
-    State(_state): State<AppState>,
+pub async fn reserve_stock(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
     Json(req): Json<ReserveStockRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -155,8 +130,8 @@ async fn reserve_stock(
     })))
 }
 
-async fn release_stock(
-    State(_state): State<AppState>,
+pub async fn release_stock(
+    State(_state): State<Arc<AppState>>,
     Path(item_id): Path<String>,
     Json(req): Json<ReserveStockRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
@@ -167,14 +142,14 @@ async fn release_stock(
     })))
 }
 
-async fn get_low_stock_alerts(
-    State(_state): State<AppState>,
+pub async fn get_low_stock_alerts(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![]))
 }
 
-async fn list_warehouses(
-    State(_state): State<AppState>,
+pub async fn list_warehouses(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<serde_json::Value>>, StatusCode> {
     Ok(Json(vec![serde_json::json!({
         "id": Uuid::new_v4().to_string(),
@@ -184,21 +159,21 @@ async fn list_warehouses(
     })]))
 }
 
-async fn create_warehouse(
-    State(_state): State<AppState>,
+pub async fn create_warehouse(
+    State(_state): State<Arc<AppState>>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let warehouse_id = Uuid::new_v4();
+    let warehouse_id = Uuid::new_v4().to_string();
     Ok(Json(serde_json::json!({
-        "id": warehouse_id.to_string(),
+        "id": warehouse_id,
         "code": req.get("code").and_then(|v| v.as_str()).unwrap_or("WH001"),
         "name": req.get("name").and_then(|v| v.as_str()).unwrap_or("Warehouse"),
         "created_at": chrono::Utc::now().to_rfc3339()
     })))
 }
 
-async fn get_inventory_stats(
-    State(_state): State<AppState>,
+pub async fn get_inventory_stats(
+    State(_state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     Ok(Json(serde_json::json!({
         "total_items": 0,
