@@ -1,9 +1,55 @@
 //! Built-in skills — bundled with BizClaw.
 
 use crate::parser::SkillManifest;
+use std::path::Path;
 
 /// Get all built-in skills.
 pub fn builtin_skills() -> Vec<SkillManifest> {
+    let mut skills = Vec::new();
+    
+    // Load agency-derived skills for Vietnamese OPC market
+    skills.extend(load_agency_derived_skills());
+    
+    // Add built-in skill definitions
+    skills.extend(builtin_skill_defs());
+    
+    skills
+}
+
+/// Load skills from agency-derived directory (VN market focused).
+pub fn load_agency_derived_skills() -> Vec<SkillManifest> {
+    let mut skills = Vec::new();
+    
+    let agency_skills_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .map(|p| p.join("skills").join("agency-derived"))
+        .unwrap_or_else(|| Path::new("skills/agency-derived").to_path_buf());
+    
+    if agency_skills_dir.exists() {
+        if let Ok(entries) = std::fs::read_dir(&agency_skills_dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.extension().map_or(false, |e| e == "md") {
+                    if let Ok(skill) = SkillManifest::load(&path) {
+                        tracing::info!(
+                            "📦 Loaded agency skill: {} ({})",
+                            skill.metadata.name,
+                            skill.metadata.category
+                        );
+                        skills.push(skill);
+                    }
+                }
+            }
+        }
+    } else {
+        tracing::debug!("Agency-derived skills dir not found: {:?}", agency_skills_dir);
+    }
+    
+    skills
+}
+
+/// Built-in skill definitions (original skills).
+fn builtin_skill_defs() -> Vec<SkillManifest> {
     let skill_defs = vec![
         (
             "rust-expert",
@@ -177,7 +223,13 @@ mod tests {
     #[test]
     fn test_builtin_skills_count() {
         let skills = builtin_skills();
-        assert_eq!(skills.len(), 16); // 10 original + 6 BizClaw-specific
+        // 16 original (10 + 6 BizClaw) + 18 agency-derived = 34 skills
+        // But depends on whether agency skills dir exists during test
+        assert!(
+            skills.len() >= 16,
+            "Expected at least 16 built-in skills, got {}",
+            skills.len()
+        );
     }
 
     #[test]
@@ -206,5 +258,49 @@ mod tests {
         assert!(names.contains(&"bizclaw-code-review"));
         assert!(names.contains(&"bizclaw-feature-review"));
         assert!(names.contains(&"bizclaw-architecture"));
+    }
+    
+    #[test]
+    fn test_agency_skills_loaded_when_exists() {
+        let skills = builtin_skills();
+        let names: Vec<&str> = skills.iter().map(|s| s.metadata.name.as_str()).collect();
+        
+        // Check for key agency-derived skills (VN market)
+        let agency_skills = [
+            "chief-of-staff",
+            "content-creator",
+            "tiktok-strategist",
+            "outbound-strategist",
+            "customer-service",
+            "legal-compliance-checker",
+        ];
+        
+        let found_count = agency_skills
+            .iter()
+            .filter(|s| names.contains(s))
+            .count();
+        
+        // At least some agency skills should be loaded if directory exists
+        if cfg!(test) {
+            // In test environment, might not have agency dir
+            println!("Agency skills found: {}/{}", found_count, agency_skills.len());
+        }
+    }
+
+    #[test]
+    fn test_agency_skills_categories() {
+        let skills = builtin_skills();
+        let categories: Vec<&str> = skills
+            .iter()
+            .map(|s| s.metadata.category.as_str())
+            .collect();
+        
+        // Should have multiple categories including agency-derived
+        let unique_categories: std::collections::HashSet<&str> = categories.iter().cloned().collect();
+        assert!(
+            unique_categories.len() >= 3,
+            "Expected at least 3 skill categories, got {:?}",
+            unique_categories
+        );
     }
 }

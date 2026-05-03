@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -60,7 +61,7 @@ impl Ledger {
         let tx = Transaction::new(description, entries);
         
         for (account_code, amount, is_debit) in &tx.entries {
-            if let Some(account) = self.accounts.get_mut(*account_code) {
+            if let Some(account) = self.accounts.get_mut(account_code) {
                 if *is_debit {
                     account.debit(*amount);
                 } else {

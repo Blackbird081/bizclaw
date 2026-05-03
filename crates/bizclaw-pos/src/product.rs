@@ -97,6 +97,36 @@ impl ProductCatalog {
             .filter(|p| p.name.to_lowercase().contains(&query_lower) || p.sku.to_lowercase().contains(&query_lower))
             .collect()
     }
+
+    pub fn get(&self, product_id: &str) -> Option<&Product> {
+        self.products.get(product_id)
+    }
+
+    pub fn get_mut(&mut self, product_id: &str) -> Option<&mut Product> {
+        self.products.get_mut(product_id)
+    }
+
+    pub fn get_all(&self) -> Vec<&Product> {
+        self.products.values().collect()
+    }
+
+    pub fn get_by_category(&self, category: &str) -> Vec<&Product> {
+        self.products.values()
+            .filter(|p| p.category == category)
+            .collect()
+    }
+
+    pub fn remove(&mut self, product_id: &str) -> Option<Product> {
+        if let Some(product) = self.products.remove(product_id) {
+            self.by_sku.remove(&product.sku);
+            if let Some(ref barcode) = product.barcode {
+                self.by_barcode.remove(barcode);
+            }
+            Some(product)
+        } else {
+            None
+        }
+    }
 }
 
 impl Default for ProductCatalog {

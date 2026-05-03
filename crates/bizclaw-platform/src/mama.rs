@@ -321,6 +321,205 @@ pub struct SkillMeta {
     pub description: String,
     pub category: String,
     pub keywords: Vec<String>,
+    pub source: String,
+}
+
+/// Agency-derived skills metadata for Vietnamese OPC market.
+/// These are loaded from skills/agency-derived/ directory.
+pub fn agency_skills() -> Vec<SkillMeta> {
+    vec![
+        // Executive
+        SkillMeta {
+            name: "chief-of-staff".into(),
+            description: "Master coordinator for OPC founders - filters noise, owns processes, routes decisions".into(),
+            category: "executive".into(),
+            keywords: vec![
+                "điều phối".into(), "quản lý".into(), "lên kế hoạch".into(),
+                "coordination".into(), "planning".into(), "process".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Marketing
+        SkillMeta {
+            name: "content-creator".into(),
+            description: "Expert content strategist for Vietnamese market - multi-platform campaigns, SEO, social media".into(),
+            category: "marketing".into(),
+            keywords: vec![
+                "content".into(), "viết bài".into(), "marketing".into(),
+                "copywriting".into(), "social media".into(), "SEO".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "tiktok-strategist".into(),
+            description: "Expert TikTok marketing for Vietnamese market - viral content, algorithm optimization".into(),
+            category: "marketing".into(),
+            keywords: vec![
+                "tiktok".into(), "video".into(), "viral".into(),
+                "content".into(), "social media".into(), "trending".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "seo-specialist".into(),
+            description: "Expert SEO for Vietnamese market - Google Vietnam ranking, technical SEO".into(),
+            category: "marketing".into(),
+            keywords: vec![
+                "SEO".into(), "google".into(), "tìm kiếm".into(),
+                "ranking".into(), "traffic".into(), "website".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "growth-hacker".into(),
+            description: "Rapid user acquisition specialist - viral loops, experiments, conversion optimization".into(),
+            category: "marketing".into(),
+            keywords: vec![
+                "growth".into(), "tăng trưởng".into(), "acquisition".into(),
+                "viral".into(), "conversion".into(), "experiment".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Sales
+        SkillMeta {
+            name: "outbound-strategist".into(),
+            description: "Signal-based outbound specialist for Vietnamese B2B - prospecting, ICP targeting".into(),
+            category: "sales".into(),
+            keywords: vec![
+                "sales".into(), "outbound".into(), " prospecting".into(),
+                "lead".into(), "khách hàng".into(), "B2B".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "sales-discovery-coach".into(),
+            description: "SPIN selling specialist - qualifying leads, understanding customer needs".into(),
+            category: "sales".into(),
+            keywords: vec![
+                "sales".into(), "discovery".into(), "qualification".into(),
+                "SPIN".into(), "khách hàng".into(), "needs".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "deal-strategist".into(),
+            description: "MEDDICC sales specialist - deal qualification, competitive positioning".into(),
+            category: "sales".into(),
+            keywords: vec![
+                "deal".into(), "MEDDICC".into(), "competition".into(),
+                "win strategy".into(), "pipeline".into(), "forecast".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Product
+        SkillMeta {
+            name: "product-manager".into(),
+            description: "Product management for OPC - roadmap planning, feature prioritization".into(),
+            category: "product".into(),
+            keywords: vec![
+                "product".into(), "roadmap".into(), "feature".into(),
+                "prioritization".into(), "sprint".into(), "planning".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "sprint-prioritizer".into(),
+            description: "Agile sprint planning - backlog prioritization, capacity management".into(),
+            category: "product".into(),
+            keywords: vec![
+                "sprint".into(), "agile".into(), "backlog".into(),
+                "scrum".into(), "planning".into(), "capacity".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Legal
+        SkillMeta {
+            name: "legal-compliance-checker".into(),
+            description: "Vietnamese legal compliance - contract review, GDPR, e-commerce regulations".into(),
+            category: "legal".into(),
+            keywords: vec![
+                "legal".into(), "compliance".into(), "hợp đồng".into(),
+                "luật".into(), "quy định".into(), "thuế".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Engineering
+        SkillMeta {
+            name: "technical-writer".into(),
+            description: "Technical documentation - user guides, API docs, SOPs".into(),
+            category: "engineering".into(),
+            keywords: vec![
+                "documentation".into(), "technical writing".into(),
+                "hướng dẫn".into(), "API docs".into(), "SOP".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Testing
+        SkillMeta {
+            name: "reality-checker".into(),
+            description: "QA specialist - testing, bug verification, production readiness".into(),
+            category: "testing".into(),
+            keywords: vec![
+                "QA".into(), "testing".into(), "bug".into(),
+                "quality".into(), "test case".into(), "verification".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Support
+        SkillMeta {
+            name: "analytics-reporter".into(),
+            description: "Data analytics and reporting - KPI tracking, dashboard, business intelligence".into(),
+            category: "support".into(),
+            keywords: vec![
+                "analytics".into(), "report".into(), "KPI".into(),
+                "dashboard".into(), "data".into(), "bi".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        SkillMeta {
+            name: "customer-service".into(),
+            description: "Customer service specialist - ticket management, response templates, satisfaction".into(),
+            category: "support".into(),
+            keywords: vec![
+                "customer service".into(), "support".into(), "ticket".into(),
+                "khách hàng".into(), "response".into(), "complaint".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Finance
+        SkillMeta {
+            name: "finance-analyst".into(),
+            description: "Financial analysis - bookkeeping, financial reporting, tax planning".into(),
+            category: "finance".into(),
+            keywords: vec![
+                "finance".into(), "accounting".into(), "bookkeeping".into(),
+                "tax".into(), "thuế".into(), "financial".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // E-commerce
+        SkillMeta {
+            name: "ecommerce-operator".into(),
+            description: "E-commerce operations - Shopee, Lazada, TikTok Shop, cross-border".into(),
+            category: "ecommerce".into(),
+            keywords: vec![
+                "ecommerce".into(), "shopee".into(), "lazada".into(),
+                "tiktok shop".into(), "selling".into(), "orders".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+        // Retail
+        SkillMeta {
+            name: "customer-returns".into(),
+            description: "Retail returns management - return policy, processing, refund workflow".into(),
+            category: "retail".into(),
+            keywords: vec![
+                "returns".into(), "refund".into(), "đổi trả".into(),
+                "hoàn tiền".into(), "logistics".into(),
+            ],
+            source: "agency-derived".into(),
+        },
+    ]
 }
 
 /// Built-in skills available in BizClaw.
@@ -337,6 +536,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "browse".into(),
                 "duyệt".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "calendar".into(),
@@ -350,6 +550,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "booking".into(),
                 "đặt lịch".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "social_post".into(),
@@ -362,6 +563,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "telegram".into(),
                 "marketing".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "research".into(),
@@ -373,6 +575,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "paper".into(),
                 "academic".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "shell".into(),
@@ -384,6 +587,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "shell".into(),
                 "lệnh".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "file".into(),
@@ -396,6 +600,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "read".into(),
                 "write".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "http_request".into(),
@@ -407,6 +612,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "request".into(),
                 "webhook".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "memory_search".into(),
@@ -419,6 +625,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "search".into(),
                 "rag".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "db_query".into(),
@@ -430,6 +637,7 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "sql".into(),
                 "dữ liệu".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "edit_file".into(),
@@ -441,18 +649,21 @@ pub fn builtin_skills() -> Vec<SkillMeta> {
                 "replace".into(),
                 "chỉnh".into(),
             ],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "document_reader".into(),
             description: "Đọc file PDF, DOCX, TXT và trích nội dung.".into(),
             category: "data".into(),
             keywords: vec!["pdf".into(), "docx".into(), "đọc".into(), "document".into()],
+            source: "builtin".into(),
         },
         SkillMeta {
             name: "grep_search".into(),
             description: "Tìm kiếm nội dung trong file/thư mục (grep).".into(),
             category: "system".into(),
             keywords: vec!["grep".into(), "tìm".into(), "search".into(), "find".into()],
+            source: "builtin".into(),
         },
     ]
 }
@@ -462,14 +673,28 @@ pub fn search_skills(query: &str, top_n: usize) -> Vec<SkillMeta> {
     let query_lower = query.to_lowercase();
     let query_words: Vec<&str> = query_lower.split_whitespace().collect();
 
-    let mut scored: Vec<(f64, SkillMeta)> = builtin_skills()
+    // Combine agency skills and built-in skills
+    let mut all_skills = agency_skills();
+    all_skills.extend(builtin_skills());
+
+    let mut scored: Vec<(f64, SkillMeta)> = all_skills
         .into_iter()
         .map(|skill| {
             let mut score = 0.0;
 
-            // Exact name match
+            // Exact name match (highest priority)
             if query_lower.contains(&skill.name) {
                 score += 10.0;
+            }
+
+            // Category match (high priority)
+            if query_lower.contains(&skill.category) {
+                score += 5.0;
+            }
+
+            // Source indicator (agency skills get boost for VN market)
+            if skill.source == "agency-derived" {
+                score += 2.0;
             }
 
             // Keyword matching
@@ -496,6 +721,13 @@ pub fn search_skills(query: &str, top_n: usize) -> Vec<SkillMeta> {
 
     scored.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap_or(std::cmp::Ordering::Equal));
     scored.into_iter().take(top_n).map(|(_, s)| s).collect()
+}
+
+/// Get all available skills (both agency-derived and built-in).
+pub fn get_all_skills() -> Vec<SkillMeta> {
+    let mut skills = agency_skills();
+    skills.extend(builtin_skills());
+    skills
 }
 
 // ══════════════════════════════════════════════════════════
@@ -800,6 +1032,7 @@ pub fn load_skills_from_registry() -> Vec<SkillMeta> {
                 m.metadata.category.clone()
             },
             keywords: m.metadata.tags.clone(),
+            source: m.metadata.source.clone().unwrap_or_else(|| "marketplace".into()),
         })
         .collect();
 
@@ -1617,9 +1850,104 @@ mod tests {
             description: "Test skill".into(),
             category: "testing".into(),
             keywords: vec!["test".into()],
+            source: "builtin".into(),
         };
         let json = serde_json::to_string(&skill).unwrap();
         assert!(json.contains("test"));
+        assert!(json.contains("source"));
+    }
+
+    // ── Agency Skills Tests ─────────────────────────────────
+
+    #[test]
+    fn test_agency_skills_loaded() {
+        let skills = agency_skills();
+        assert!(!skills.is_empty(), "Agency skills should be loaded");
+        
+        // Check for key VN market skills
+        let skill_names: Vec<&str> = skills.iter().map(|s| s.name.as_str()).collect();
+        assert!(skill_names.contains(&"chief-of-staff"));
+        assert!(skill_names.contains(&"content-creator"));
+        assert!(skill_names.contains(&"tiktok-strategist"));
+        assert!(skill_names.contains(&"outbound-strategist"));
+        assert!(skill_names.contains(&"customer-service"));
+    }
+
+    #[test]
+    fn test_agency_skills_have_vietnamese_keywords() {
+        let skills = agency_skills();
+        for skill in skills {
+            assert!(
+                skill.source == "agency-derived",
+                "Agency skill '{}' should have source=agency-derived",
+                skill.name
+            );
+        }
+    }
+
+    #[test]
+    fn test_get_all_skills_combines_sources() {
+        let all = get_all_skills();
+        let builtin_count = builtin_skills().len();
+        let agency_count = agency_skills().len();
+        
+        assert_eq!(
+            all.len(),
+            builtin_count + agency_count,
+            "get_all_skills should combine built-in and agency skills"
+        );
+    }
+
+    #[test]
+    fn test_search_skills_finds_agency_skills() {
+        // Test Vietnamese keywords
+        let results = search_skills("viết content tiktok viral", 5);
+        assert!(!results.is_empty());
+        
+        // Should find tiktok-strategist or content-creator
+        let found: Vec<&str> = results.iter().map(|s| s.name.as_str()).collect();
+        assert!(
+            found.contains(&"tiktok-strategist") || found.contains(&"content-creator"),
+            "Should find TikTok or content skill: {:?}",
+            found
+        );
+    }
+
+    #[test]
+    fn test_search_skills_vietnamese_sales() {
+        let results = search_skills("chiến lược sales outbound khách hàng B2B", 5);
+        assert!(!results.is_empty());
+        
+        let found: Vec<&str> = results.iter().map(|s| s.name.as_str()).collect();
+        assert!(
+            found.contains(&"outbound-strategist") || found.contains(&"sales-discovery-coach"),
+            "Should find sales skill: {:?}",
+            found
+        );
+    }
+
+    #[test]
+    fn test_search_skills_customer_service() {
+        let results = search_skills("chăm sóc khách hàng ticket phản hồi", 5);
+        assert!(!results.is_empty());
+        
+        let found: Vec<&str> = results.iter().map(|s| s.name.as_str()).collect();
+        assert!(
+            found.contains(&"customer-service") || found.contains(&"analytics-reporter"),
+            "Should find customer service skill: {:?}",
+            found
+        );
+    }
+
+    #[test]
+    fn test_agency_skills_categories() {
+        let skills = agency_skills();
+        let categories: Vec<&str> = skills.iter().map(|s| s.category.as_str()).collect();
+        
+        // Should have multiple VN market categories
+        assert!(categories.contains(&"marketing"));
+        assert!(categories.contains(&"sales"));
+        assert!(categories.contains(&"support"));
     }
 
     #[test]

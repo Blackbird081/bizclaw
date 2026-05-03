@@ -567,6 +567,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "bizclaw-accounting"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bizclaw-core",
+ "bizclaw-db",
+ "chrono",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid 1.21.0",
+]
+
+[[package]]
 name = "bizclaw-agent"
 version = "1.1.7"
 dependencies = [
@@ -629,6 +648,20 @@ dependencies = [
  "thiserror 2.0.18",
  "tokio",
  "tracing",
+ "uuid 1.21.0",
+]
+
+[[package]]
+name = "bizclaw-banking"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "bizclaw-core",
+ "chrono",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
  "uuid 1.21.0",
 ]
 
@@ -824,6 +857,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "bizclaw-einvoice"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "bizclaw-core",
+ "chrono",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "uuid 1.21.0",
+]
+
+[[package]]
 name = "bizclaw-evaluator"
 version = "1.1.7"
 dependencies = [
@@ -949,6 +996,21 @@ dependencies = [
  "thiserror 1.0.69",
  "tokio",
  "tracing",
+]
+
+[[package]]
+name = "bizclaw-inventory"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "bizclaw-core",
+ "chrono",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid 1.21.0",
 ]
 
 [[package]]
@@ -1201,6 +1263,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "bizclaw-payment"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bizclaw-core",
+ "bizclaw-db",
+ "chrono",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid 1.21.0",
+]
+
+[[package]]
 name = "bizclaw-platform"
 version = "1.1.7"
 dependencies = [
@@ -1231,6 +1313,38 @@ dependencies = [
  "tower-http",
  "tracing",
  "urlencoding",
+ "uuid 1.21.0",
+]
+
+[[package]]
+name = "bizclaw-pos"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bizclaw-core",
+ "bizclaw-db",
+ "bizclaw-payment",
+ "chrono",
+ "futures",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid 1.21.0",
+]
+
+[[package]]
+name = "bizclaw-proposal"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "bizclaw-core",
+ "chrono",
+ "serde",
+ "serde_json",
+ "tokio",
  "uuid 1.21.0",
 ]
 
@@ -1403,6 +1517,25 @@ dependencies = [
  "url",
  "uuid 1.21.0",
  "wiremock",
+]
+
+[[package]]
+name = "bizclaw-support"
+version = "1.1.7"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bizclaw-core",
+ "bizclaw-db",
+ "chrono",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid 1.21.0",
 ]
 
 [[package]]

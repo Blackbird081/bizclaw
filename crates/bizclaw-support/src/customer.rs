@@ -1,6 +1,7 @@
-use chrono::{DateTime, Utc};
+//! Customer 360 profile for Vietnamese customers
+
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Customer {
@@ -9,20 +10,17 @@ pub struct Customer {
     pub phone: Option<String>,
     pub email: Option<String>,
     pub zalo_id: Option<String>,
+    pub facebook_id: Option<String>,
+    pub telegram_id: Option<String>,
     pub segment: CustomerSegment,
-    pub total_spent: i64,
-    pub order_count: u32,
-    pub ticket_count: u32,
-    pub last_order_at: Option<DateTime<Utc>>,
-    pub last_ticket_at: Option<DateTime<Utc>>,
+    pub stats: CustomerStats,
     pub tags: Vec<String>,
-    pub notes: Vec<String>,
+    pub metadata: std::collections::HashMap<String, String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "snake_case")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CustomerSegment {
     VIP,
     Regular,
@@ -31,31 +29,34 @@ pub enum CustomerSegment {
     Churned,
 }
 
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct CustomerStats {
+    pub total_orders: u32,
+    pub total_spent: i64,
+    pub avg_order_value: f64,
+    pub last_order_date: Option<DateTime<Utc>>,
+    pub tickets_created: u32,
+    pub tickets_resolved: u32,
+    pub sentiment_score: f32,
+}
+
 impl Customer {
-    pub fn new(name: &str) -> Self {
-        let now = Utc::now();
+    pub fn new(name: String) -> Self {
         Self {
-            id: Uuid::new_v4().to_string(),
-            name: name.to_string(),
+            id: uuid::Uuid::new_v4().to_string(),
+            name,
             phone: None,
             email: None,
             zalo_id: None,
+            facebook_id: None,
+            telegram_id: None,
             segment: CustomerSegment::New,
-            total_spent: 0,
-            order_count: 0,
-            ticket_count: 0,
-            last_order_at: None,
-            last_ticket_at: None,
-            tags: vec![],
-            notes: vec![],
-            created_at: now,
-            updated_at: now,
+            stats: CustomerStats::default(),
+            tags: Vec::new(),
+            metadata: std::collections::HashMap::new(),
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
         }
-    }
-
-    pub fn with_phone(mut self, phone: &str) -> Self {
-        self.phone = Some(phone.to_string());
-        self
     }
 
     pub fn with_zalo(mut self, zalo_id: &str) -> Self {
@@ -63,87 +64,67 @@ impl Customer {
         self
     }
 
-    pub fn add_order(&mut self, amount: i64) {
-        self.total_spent += amount;
-        self.order_count += 1;
-        self.last_order_at = Some(Utc::now());
-        self.update_segment();
-        self.updated_at = Utc::now();
+    pub fn with_phone(mut self, phone: &str) -> Self {
+        self.phone = Some(phone.to_string());
+        self
     }
 
-    pub fn add_ticket(&mut self) {
-        self.ticket_count += 1;
-        self.last_ticket_at = Some(Utc::now());
-        self.updated_at = Utc::now();
+    pub fn with_email(mut self, email: &str) -> Self {
+        self.email = Some(email.to_string());
+        self
     }
 
-    fn update_segment(&mut self) {
-        if self.order_count == 0 {
-            self.segment = CustomerSegment::New;
-        } else if self.total_spent > 10_000_000 {
+    pub fn with_facebook(mut self, fb_id: &str) -> Self {
+        self.facebook_id = Some(fb_id.to_string());
+        self
+    }
+
+    pub fn with_telegram(mut self, tg_id: &str) -> Self {
+        self.telegram_id = Some(tg_id.to_string());
+        self
+    }
+
+    pub fn add_tag(&mut self, tag: &str) {
+        if !self.tags.contains(&tag.to_string()) {
+            self.tags.push(tag.to_string());
+        }
+    }
+
+    pub fn remove_tag(&mut self, tag: &str) {
+        self.tags.retain(|t| t != tag);
+    }
+
+    pub fn calculate_segment(&mut self) {
+        if self.stats.total_spent > 10_000_000 {
             self.segment = CustomerSegment::VIP;
-        } else if self.total_spent > 1_000_000 {
-            self.segment = CustomerSegment::Regular;
-        } else {
+        } else if self.stats.sentiment_score < -0.5 || self.stats.last_order_date.map(|d| (Utc::now() - d).num_days() > 90).unwrap_or(false) {
+            self.segment = CustomerSegment::AtRisk;
+        } else if self.stats.total_orders == 0 {
             self.segment = CustomerSegment::New;
-        }
-    }
-
-    pub fn average_order_value(&self) -> i64 {
-        if self.order_count > 0 {
-            self.total_spent / self.order_count as i64
+        } else if self.resolution_rate() < 0.8 {
+            self.segment = CustomerSegment::AtRisk;
         } else {
-            0
+            self.segment = CustomerSegment::Regular;
         }
+        self.updated_at = Utc::now();
     }
-}
-
-pub struct CustomerManager {
-    customers: std::collections::HashMap<String, Customer>,
-    by_phone: std::collections::HashMap<String, String>,
-    by_zalo: std::collections::HashMap<String, String>,
-}
-
-impl CustomerManager {
-    pub fn new() -> Self {
-        Self {
-            customers: std::collections::HashMap::new(),
-            by_phone: std::collections::HashMap::new(),
-            by_zalo: std::collections::HashMap::new(),
+    
+    pub fn resolution_rate(&self) -> f32 {
+        if self.stats.tickets_created == 0 {
+            return 1.0;
         }
+        self.stats.tickets_resolved as f32 / self.stats.tickets_created as f32
     }
 
-    pub async fn create_customer(&mut self, customer: Customer) -> anyhow::Result<Customer> {
-        let id = customer.id.clone();
-        self.customers.insert(id.clone(), customer.clone());
-        
-        if let Some(ref phone) = customer.phone {
-            self.by_phone.insert(phone.clone(), id.clone());
-        }
-        if let Some(ref zalo) = customer.zalo_id {
-            self.by_zalo.insert(zalo.clone(), id.clone());
-        }
-        
-        Ok(customer)
+    pub fn lifetime_value(&self) -> f64 {
+        self.stats.total_spent as f64 * (1.0 + self.stats.sentiment_score as f64)
     }
 
-    pub async fn find_by_phone(&self, phone: &str) -> Option<&Customer> {
-        self.by_phone.get(phone).and_then(|id| self.customers.get(id))
-    }
-
-    pub async fn find_by_zalo(&self, zalo_id: &str) -> Option<&Customer> {
-        self.by_zalo.get(zalo_id).and_then(|id| self.customers.get(id))
-    }
-
-    pub async fn get_vip_customers(&self) -> Vec<&Customer> {
-        self.customers.values()
-            .filter(|c| c.segment == CustomerSegment::VIP)
-            .collect()
-    }
-}
-
-impl Default for CustomerManager {
-    fn default() -> Self {
-        Self::new()
+    pub fn add_purchase(&mut self, amount: i64) {
+        self.stats.total_orders += 1;
+        self.stats.total_spent += amount;
+        self.stats.avg_order_value = self.stats.total_spent as f64 / self.stats.total_orders as f64;
+        self.stats.last_order_date = Some(Utc::now());
+        self.calculate_segment();
     }
 }

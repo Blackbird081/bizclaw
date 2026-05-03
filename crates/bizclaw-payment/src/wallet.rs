@@ -9,9 +9,9 @@ pub struct WalletPayment {
 }
 
 pub struct MoMoClient {
-    partner_code: String,
-    secret_key: String,
-    access_key: String,
+    pub partner_code: String,
+    pub secret_key: String,
+    pub access_key: String,
 }
 
 impl MoMoClient {
@@ -24,28 +24,14 @@ impl MoMoClient {
     }
 
     pub fn create_payment_request(&self, payment: &WalletPayment) -> anyhow::Result<String> {
-        let mut params: Vec<(&str, String)> = vec![
-            ("partnerCode", self.partner_code.clone()),
-            ("partnerName", "BizClaw".to_string()),
-            ("storeId", "BizClawStore".to_string()),
-            ("requestId", payment.order_id.clone()),
-            ("amount", payment.amount.to_string()),
-            ("orderId", payment.order_id.clone()),
-            ("orderExpireTime", "".to_string()),
-            ("收割Info", payment.description.clone()),
-            ("redirectUrl", "https://bizclaw.vn".to_string()),
-            ("ipnUrl", "https://bizclaw.vn/ipn".to_string()),
-            ("lang", "vi".to_string()),
-        ];
-        
-        Ok(format!("MoMo payment request created for {}", payment.phone))
+        Ok(format!("MoMo payment: {} - {} VND", payment.phone, payment.amount))
     }
 }
 
 pub struct ZaloPayClient {
-    app_id: String,
-    key1: String,
-    key2: String,
+    pub app_id: String,
+    pub key1: String,
+    pub key2: String,
 }
 
 impl ZaloPayClient {
@@ -58,9 +44,6 @@ impl ZaloPayClient {
     }
 
     pub fn create_payment(&self, payment: &WalletPayment) -> anyhow::Result<String> {
-        Ok(format!(
-            "ZaloPay payment for {} - {} VND",
-            payment.phone, payment.amount
-        ))
+        Ok(format!("ZaloPay: {} - {} VND", payment.phone, payment.amount))
     }
 }

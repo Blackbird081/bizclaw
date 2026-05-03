@@ -22,13 +22,6 @@ License đầy đủ được ghi lại trong [THIRD_PARTY_NOTICES.md](THIRD_PAR
 Các dự án ảnh hưởng đến thiết kế, kiến trúc, hoặc tính năng cụ thể của BizClaw.
 Chúng tôi học hỏi từ cách tiếp cận của họ và tự triển khai phiên bản riêng bằng Rust.
 
-### Agent & Điều Phối
-
-| Dự án | Bài học |
-|-------|--------|
-| **SkyClaw** | Model Router — tự động chọn tier model tối ưu theo độ phức tạp của task |
-| **GoClaw** | Phát hiện vòng lặp tool — nhận biết khi agent gọi cùng một tool với tham số tương tự |
-| **Paperclip** | Lớp điều phối agent — team agent phân cấp, ngân sách token per-agent, cấu trúc tổ chức |
 
 ### Tri Thức & RAG
 

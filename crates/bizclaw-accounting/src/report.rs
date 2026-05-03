@@ -70,3 +70,20 @@ pub struct CashFlow {
     pub financing: i64,
     pub net_cash: i64,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TrialBalanceEntry {
+    pub account_code: String,
+    pub account_name: String,
+    pub debit: i64,
+    pub credit: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TrialBalance {
+    pub date: chrono::DateTime<chrono::Utc>,
+    pub accounts: Vec<TrialBalanceEntry>,
+    pub total_debit: i64,
+    pub total_credit: i64,
+    pub balanced: bool,
+}

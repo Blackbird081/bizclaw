@@ -181,6 +181,18 @@ bizclaw-sandbox = { path = "crates/bizclaw-sandbox" }
 bizclaw-browser = { path = "crates/bizclaw-browser" }
 bizclaw-skillforge = { path = "crates/bizclaw-skillforge" }
 bizclaw-agi = { path = "crates/bizclaw-agi" }
+bizclaw-outreach = { path = "crates/bizclaw-outreach" }
+bizclaw-invoice = { path = "crates/bizclaw-invoice" }
+bizclaw-legal = { path = "crates/bizclaw-legal" }
+bizclaw-analytics = { path = "crates/bizclaw-analytics" }
+bizclaw-payment = { path = "crates/bizclaw-payment" }
+bizclaw-support = { path = "crates/bizclaw-support" }
+bizclaw-accounting = { path = "crates/bizclaw-accounting" }
+bizclaw-pos = { path = "crates/bizclaw-pos" }
+bizclaw-inventory = { path = "crates/bizclaw-inventory" }
+bizclaw-proposal = { path = "crates/bizclaw-proposal" }
+bizclaw-einvoice = { path = "crates/bizclaw-einvoice" }
+bizclaw-banking = { path = "crates/bizclaw-banking" }
 
 [package]
 name = "bizclaw"
@@ -233,10 +245,6 @@ path = "src/main.rs"
 [[bin]]
 name = "bizclaw-platform"
 path = "src/platform_main.rs"
-
-[[bin]]
-name = "bizclaw-desktop"
-path = "src/desktop_main.rs"
 
 [[bin]]
 name = "bizclaw-local"

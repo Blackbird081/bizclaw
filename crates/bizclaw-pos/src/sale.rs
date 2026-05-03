@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use uuid::Uuid;
 
 use crate::product::Product;
@@ -77,8 +78,9 @@ impl Sale {
 
     fn generate_number() -> String {
         let now = Utc::now();
-        let seq = rand::random::<u32>() % 10000;
-        format!("POS-{}{:02}{:02}-{:04}", now.format("%Y%m%d"), seq)
+        let timestamp = now.timestamp();
+        let seq = timestamp % 10000;
+        format!("POS-{}{:04}", now.format("%Y%m%d"), seq)
     }
 
     pub fn add_item(&mut self, item: SaleItem) {

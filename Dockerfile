@@ -1,72 +1,60 @@
-# ═══════════════════════════════════════════════════════════════
-# BizClaw AI Agent Platform — Optimized Multi-stage Docker Build
-# Self-hosted on Pi, VPS, or any Linux machine
-# ═══════════════════════════════════════════════════════════════
+FROM rust:1.75-slim as builder
 
-# Stage 1: Build
-FROM rust:latest AS builder
+WORKDIR /app
 
-WORKDIR /build
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y pkg-config libdbus-1-dev
-
-# Copy workspace Cargo files first (dependency caching layer)
+# Copy manifests
 COPY Cargo.toml Cargo.lock ./
+COPY crates/bizclaw-core/Cargo.toml crates/bizclaw-core/
+COPY crates/bizclaw-payment/Cargo.toml crates/bizclaw-payment/
+COPY crates/bizclaw-support/Cargo.toml crates/bizclaw-support/
+COPY crates/bizclaw-accounting/Cargo.toml crates/bizclaw-accounting/
+COPY crates/bizclaw-inventory/Cargo.toml crates/bizclaw-inventory/
+COPY crates/bizclaw-pos/Cargo.toml crates/bizclaw-pos/
+COPY crates/bizclaw-knowledge/Cargo.toml crates/bizclaw-knowledge/
+COPY crates/bizclaw-skills/Cargo.toml crates/bizclaw-skills/
+COPY crates/bizclaw-platform/Cargo.toml crates/bizclaw-platform/
 
-# Copy crate manifests only (for dep resolution)
-COPY crates/ crates/
-COPY src/ src/
-COPY data/ data/
-COPY migrations/ migrations/
+# Create dummy source for dependency caching
+RUN mkdir -p src && echo "fn main() {}" > src/main.rs
+RUN cargo build --release
+RUN rm -rf src
 
-# Build release binaries with optimizations
-RUN cargo build --release --bin bizclaw --bin bizclaw-platform
+# Copy actual source
+COPY . .
 
-# Stage 2: Runtime — minimal image with only what's needed
-FROM debian:trixie-slim AS runtime
+# Build release
+RUN touch src/main.rs && cargo build --release --bin bizclaw-core
 
-# Install minimal runtime deps (docker-cli only, not full docker.io) + yt-dlp/ffmpeg for media extraction
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates libssl3 libdbus-1-3 curl python3 python3-pip yt-dlp ffmpeg \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Runtime stage
+FROM debian:bookworm-slim
 
-# Install docker CLI only (much smaller than docker.io)
-COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/docker
+WORKDIR /app
 
-# Copy binaries from builder
-COPY --from=builder /build/target/release/bizclaw /usr/local/bin/bizclaw
-COPY --from=builder /build/target/release/bizclaw-platform /usr/local/bin/bizclaw-platform
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# ── Security: Non-root user ──────────────────────────────────
-# Create dedicated user to run the application (no root access)
-RUN groupadd -r bizclaw && useradd -r -g bizclaw -m -s /bin/false bizclaw
+# Copy binary
+COPY --from=builder /app/target/release/bizclaw-core /app/bizclaw
 
-# Create data directory with proper ownership
-RUN mkdir -p /home/bizclaw/.bizclaw && chown -R bizclaw:bizclaw /home/bizclaw/.bizclaw
-
-# Environment — GMT+7
-ENV BIZCLAW_CONFIG=/home/bizclaw/.bizclaw/config.toml
-ENV BIZCLAW_DATA_DIR=/home/bizclaw/.bizclaw
-ENV HOME=/home/bizclaw
-ENV RUST_LOG=info
-ENV TZ=Asia/Ho_Chi_Minh
-
-# Expose ports: platform admin (3001) + tenant gateways (10001-10010)
-EXPOSE 3001 10001 10002 10003 10004 10005 10006 10007 10008 10009 10010
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD curl -f http://localhost:3001/health || exit 1
-
-# OCI Labels
-LABEL org.opencontainers.image.title="BizClaw AI Platform"
-LABEL org.opencontainers.image.description="Multi-tenant AI Agent platform for SME businesses"
-LABEL org.opencontainers.image.version="0.3.2"
-
-# ── Switch to non-root user ──────────────────────────────────
+# Create non-root user
+RUN useradd -m -s /bin/bash bizclaw
 USER bizclaw
 
-# Default: run the platform
-ENTRYPOINT ["bizclaw-platform"]
-CMD ["--port", "3001", "--bizclaw-bin", "/usr/local/bin/bizclaw"]
+# Expose port
+EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Run
+CMD ["./bizclaw"]

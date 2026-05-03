@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -29,11 +29,11 @@ impl TaxCalculator {
         let taxable = monthly_income;
         match taxable {
             0..=5_000_000 => (taxable as f32 * 0.05) as i64,
-            5_000_001..=10_000_000 => (taxable as f32 * 0.10 - 250_000) as i64,
-            10_000_001..=18_000_000 => (taxable as f32 * 0.15 - 750_000) as i64,
-            18_000_001..=32_000_000 => (taxable as f32 * 0.20 - 1_950_000) as i64,
-            32_000_001..=52_000_000 => (taxable as f32 * 0.25 - 5_850_000) as i64,
-            _ => (taxable as f32 * 0.30 - 9_850_000) as i64,
+            5_000_001..=10_000_000 => (taxable as f32 * 0.10 - 250_000.0) as i64,
+            10_000_001..=18_000_000 => (taxable as f32 * 0.15 - 750_000.0) as i64,
+            18_000_001..=32_000_000 => (taxable as f32 * 0.20 - 1_950_000.0) as i64,
+            32_000_001..=52_000_000 => (taxable as f32 * 0.25 - 5_850_000.0) as i64,
+            _ => (taxable as f32 * 0.30 - 9_850_000.0) as i64,
         }
     }
 }

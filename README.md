@@ -1,196 +1,135 @@
 # 🦞 BizClaw
 
-**Nền Tảng AI Cho Doanh Nghiệp Một Người (OPC) Việt Nam** — Retail Edition
+**Nền tảng AI ERP cho Doanh nghiệp một người (OPC) Việt Nam**
 
-*Một người, một đội quân AI, vận hành toàn bộ cửa hàng Retail.*
-
-<p align="center">
-  <a href="https://github.com/nguyenduchoai/bizclaw/actions"><img src="https://img.shields.io/github/actions/workflow/status/nguyenduchoai/bizclaw/ci?style=flat-square" alt="Build"></a>
-  <a href="https://github.com/nguyenduchoai/bizclaw/releases"><img src="https://img.shields.io/github/v/release/nguyenduchoai/bizclaw?style=flat-square" alt="Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License"></a>
-</p>
+*Một người, một đội quân AI, vận hành toàn bộ cửa hàng.*
 
 ---
 
-## 🎯 Retail OPC Platform - 100% Ready
+## 🚀 Triển khai nhanh
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    BIZCLAW RETAIL OPC PLATFORM                             │
-├─────────────────┬─────────────────┬─────────────────┬─────────────────────┤
-│   POINT OF SALE │    PAYMENTS      │   INVENTORY     │   CUSTOMERS         │
-├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
-│ POS Agent       │ VietQR Agent    │ Stock Manager  │ CRM Agent          │
-│ Receipt Gen     │ MoMo/ZaloPay    │ Alerts        │ Support Ticket    │
-│ Barcode Scan    │ Banking API     │ Warehouse     │ Customer Segment  │
-├─────────────────┴─────────────────┴─────────────────┴─────────────────────┤
-│                         ACCOUNTING & COMPLIANCE                            │
-├─────────────────┬─────────────────┬─────────────────┬─────────────────────┤
-│   ACCOUNTING     │    INVOICING    │   BANKING       │   REPORTING       │
-├─────────────────┼─────────────────┼─────────────────┼─────────────────────┤
-│ Ledger          │ VAT Invoice     │ Bank Transfer  │ Sales Report    │
-│ Tax Calculator   │ E-Invoice API  │ Balance Check │ Daily Summary    │
-│ Profit/Loss     │ VietQR Payment │ Batch Pay    │ Customer Analytics│
-└─────────────────┴─────────────────┴─────────────────┴─────────────────────┘
-```
-
-### ✅ 100% OPC Modules Complete
-
-| Module | Agent/Crate | Status |
-|--------|-------------|--------|
-| **Point of Sale** | bizclaw-pos | ✅ |
-| **Payments** | bizclaw-payment | ✅ |
-| **Inventory** | bizclaw-inventory | ✅ |
-| **Customer Support** | bizclaw-support | ✅ |
-| **Accounting** | bizclaw-accounting | ✅ |
-| **E-Invoice** | bizclaw-einvoice | ✅ |
-| **Banking** | bizclaw-banking | ✅ |
-| **Proposals** | bizclaw-proposal | ✅ |
-| **Marketing** | bizclaw-outreach | ✅ |
-| **Analytics** | bizclaw-analytics | ✅ |
-
----
-
-## ✨ Tính Năng Hoàn Chỉnh
-
-### 🏪 Retail Operations
-- **POS Agent** - Bán hàng tại quầy, quét mã vạch
-- **Inventory** - Theo dõi tồn kho, cảnh báo hết hàng
-- **Customer** - CRM, phân loại khách hàng VIP/Regular
-
-### 💳 Payments & Banking
-- **VietQR** - Thanh toán QR code tức thì
-- **MoMo/ZaloPay** - Ví điện tử
-- **Banking API** - Chuyển khoản tự động
-- **E-Invoice** - Hóa đơn điện tử VNPT/Viettel/MISA
-
-### 📊 Accounting & Compliance
-- **Bookkeeping** - Sổ sách kế toán kép
-- **VAT Reports** - Báo cáo thuế hàng quý
-- **Financial Statements** - Bảng cân đối, P&L tự động
-
-### 📈 Marketing & Sales
-- **Outreach** - Zalo, Email marketing tự động
-- **Analytics** - Dashboard KPIs, báo cáo doanh thu
-- **Proposals** - Báo giá, hợp đồng
-
----
-
-## 💰 Tiết Kiệm Chi Phí
-
-| Trước BizClaw | Sau BizClaw | Tiết Kiệm |
-|---------------|------------|-----------|
-| Thu ngân: 8M | POS Agent | -100% |
-| Kế toán: 5M | Accounting Agent | -100% |
-| Nhân viên kho: 6M | Inventory Agent | -100% |
-| CSKH: 5M | Support Agent | -100% |
-| Marketing: 7M | Outreach Agent | -80% |
-| **Tổng: 31M/tháng** | **~2M/tháng** | **-94%** |
-
----
-
-## 🚀 Quick Start
+### Docker (Khuyến nghị)
 
 ```bash
-# Build
-git clone https://github.com/nguyenduchoai/bizclaw.git
-cd bizclaw
-cargo build --release
-
-# Chạy POS
-./target/release/bizclaw run --agent pos
-
-# API Gateway
-./target/release/bizclaw serve --port 3000
-```
-
-### Docker
-
-```bash
-docker run -d --name bizclaw-retail \
-  -p 3000:3000 -p 8080:8080 \
-  -v bizclaw-data:/data \
+# Pull và chạy
+docker run -d \
+  --name bizclaw \
+  -p 3000:3000 \
+  -e DATABASE_URL=postgres://user:pass@host:5432/bizclaw \
+  -e DOMAIN=https://shop-cua-ban.com \
   nguyenduchoai/bizclaw:latest
+
+# Hoặc dùng docker-compose
+curl -O https://raw.githubusercontent.com/nguyenduchoai/bizclaw/main/docker-compose.yml
+docker-compose up -d
+```
+
+### Railway (Cloud tự động)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/nguyenduchoai/bizclaw)
+
+### Render
+
+[![Deploy to Render](https://render.com/badge.svg)](https://render.com/deploy?repo=https://github.com/nguyenduchoai/bizclaw)
+
+---
+
+## 📦 Modules sẵn sàng
+
+| Module | Mô tả | Trạng thái |
+|--------|--------|-------------|
+| **POS** | Bán hàng, in hóa đơn | ✅ Production |
+| **Inventory** | Quản lý kho, cảnh báo tồn kho | ✅ Production |
+| **Support** | Ticket khách hàng, SLA | ✅ Production |
+| **Accounting** | Sổ sách, VAT, Báo cáo | ✅ Production |
+| **Payment** | VietQR, MoMo, ZaloPay | ✅ Production |
+
+---
+
+## 🌐 Cấu hình Domain
+
+### Single Tenant (1 cửa hàng)
+
+```env
+# .env
+DOMAIN=https://shop-cua-ban.com
+TENANT_MODE=single
+DATABASE_URL=postgres://...
+```
+
+### Custom Domain (Cloudflare/Railway)
+
+1. Thêm CNAME record trỏ đến deployment URL
+2. Enable SSL tự động
+3. Cấu hình in `docker-compose.yml`:
+
+```yaml
+services:
+  bizclaw:
+    environment:
+      - DOMAIN=${DOMAIN}
+      - TENANT_MODE=single
+    labels:
+      - traefik.http.routers.bizclaw.rule=Host(`shop-cua-ban.com`)
 ```
 
 ---
 
-## 📁 59+ Rust Crates
+## 📊 Workflow vận hành
 
 ```
-bizclaw/
-├── Retail Suite
-│   ├── bizclaw-pos/              # Point of Sale
-│   ├── bizclaw-payment/          # VietQR, MoMo, ZaloPay
-│   ├── bizclaw-inventory/        # Stock management
-│   ├── bizclaw-support/         # Customer tickets
-│   ├── bizclaw-accounting/      # Bookkeeping
-│   ├── bizclaw-proposal/        # Quotes
-│   ├── bizclaw-einvoice/        # VN e-invoice
-│   └── bizclaw-banking/         # Bank transfers
-├── Marketing Suite
-│   ├── bizclaw-outreach/        # Zalo, Email
-│   ├── bizclaw-analytics/       # Dashboard
-│   └── bizclaw-channels/       # Multi-channel
-├── AI Suite
-│   ├── bizclaw-brain/          # Local AI (llama.cpp)
-│   ├── bizclaw-agent/          # Multi-agent
-│   └── bizclaw-memory/         # Vector storage
-└── desktop/                    # Tauri app
+Khách hàng order
+    ↓
+POS tạo đơn → Trừ kho
+    ↓
+Thanh toán VietQR/MoMo
+    ↓
+Accounting ghi nhận doanh thu
+    ↓
+Support ticket nếu có khiếu nại
 ```
 
 ---
 
-## � Configuration
+## 🔧 Cấu hình môi trường
 
-```toml
-# config.toml
-[retail]
-store_name = "Cửa Hàng Mẫu"
-tax_code = "0123456789"
-address = "123 Đường ABC, Quận 1, TP.HCM"
-
-[banking]
-vietinbank_account = "1234567890"
-vietqr_enabled = true
-
-[invoice]
-provider = "vnpt"
-username = "your_username"
-password = "your_password"
-
-[inventory]
-low_stock_alert = 10
-auto_restock = true
-```
+| Biến | Mô tả | Ví dụ |
+|-------|--------|--------|
+| `DOMAIN` | Domain cửa hàng | `https://shop-cua-ban.com` |
+| `DATABASE_URL` | PostgreSQL connection | `postgres://...` |
+| `VIETQR_BANK_ID` | Mã ngân hàng | `970436` |
+| `VIETQR_MERCHANT_ID` | Merchant ID | `12345678901` |
+| `ZALO_APP_ID` | Zalo App ID | `123456789` |
+| `ZALO_APP_SECRET` | Zalo Secret | `xxx` |
 
 ---
 
-## 📚 Documentation
+## 📈 Dashboard KPIs
 
-| Tài Liệu | Mô Tả |
-|----------|--------|
-| [OPC Platform Plan](docs/BIZCLAW_OPC_PLATFORM_VIETNAM.md) | Business plan |
-| [Demo Case Study](docs/DEMO_OPC_CASE_STUDY.md) | MINA's Boutique |
-| [Competitive Analysis](docs/COMPETITIVE_ANALYSIS_BIZCLAW_VS_AGENCY_AGENTS.md) | vs competitors |
+- **Doanh thu hôm nay** - Tổng sales
+- **Đơn hàng** - Số lượng transactions
+- **Tồn kho thấp** - Cảnh báo reorder
+- **Ticket chưa giải quyết** - SLA breaches
 
 ---
 
-## 🛣️ Roadmap
+## 🔒 Bảo mật
 
-- [x] **Q1 2025**: Retail OPC Suite ✅
-- [ ] **Q2 2025**: Desktop App + Mobile POS
-- [ ] **Q3 2025**: E-commerce Integration
-- [ ] **Q4 2025**: Enterprise Features
+- SSL/TLS auto (Let's Encrypt)
+- Environment variables cho secrets
+- PostgreSQL với connection pooling
+- Rate limiting trên API endpoints
+
+---
+
+## 📞 Hỗ trợ
+
+- **Document**: [docs/](docs/)
+- **Issues**: [GitHub Issues](https://github.com/nguyenduchoai/bizclaw/issues)
+- **Email**: support@bizclaw.io
 
 ---
 
 ## 📄 License
 
-MIT License
-
----
-
-<p align="center">
-  <strong>Made with ❤️ for Vietnamese Retailers</strong>
-</p>
+MIT License - Free cho sử dụng thương mại
